@@ -1,29 +1,32 @@
 var userCash = 100;
 
 var applesBought = [];
-var totalApples = applesBought.length;
+var totalApples = 0;
 var orangesBought = [];
-var totalOranges = orangesBought.length;
+var totalOranges = 0;
 var bananasBought = [];
-var totalBananas = bananasBought.length;
+var totalBananas = 0;
 var pearsBought = [];
-var totalPears = pearsBought.length;
+var totalPears = 0;
 var apple = {name:"Apples", price:randomNumber(0.5, 9.5)};
 var orange = {name:"Oranges", price:randomNumber(0.5, 9.5)};
 var banana = {name:"Bananas", price:randomNumber(0.5, 9.5)};
 // var grape = {name:"Grapes", price:randomNumber(0.5, 9.5)};
 var pear = {name:"Pears", price:randomNumber(0.5, 9.5)};
 var market =[apple, orange, banana, pear];
+var averageApplePrice = 0;
+var averageBananaPrice = 0;
+var averageOrangePrice = 0;
+var averagePearPrice = 0;
 
 function appleClick(apple){
 	var currentApplePrice = parseInt(apple.price);
-	//applesBought.push(apple.price);
+	applesBought.push(currentApplePrice);
 	if(currentApplePrice>userCash){
 		alert("You are pathetic.  You can't even afford an apple!");
 	}
 	else{
 		userCash-= (apple.price);
-		applesBought++;
 	}
 	
 	console.log("user cash"+userCash);
@@ -34,13 +37,12 @@ function appleClick(apple){
 
 function orangeClick(orange){
 	var currentOrangePrice = parseInt(orange.price);
-	//applesBought.push(apple.price);
+	orangesBought.push(currentOrangePrice);
 	if(currentOrangePrice>userCash){
 		alert("You are pathetic.  You can't even afford an orange!");
 	}
 	else{
 		userCash-= (orange.price);
-		orangesBought++;
 	}
 	console.log("user cash"+userCash);
 	console.log("oranges bought" +orangesBought);
@@ -50,13 +52,12 @@ function orangeClick(orange){
 
 function bananaClick(banana){
 	var currentBananaPrice = parseInt(banana.price);
-	//applesBought.push(apple.price);
+	bananasBought.push(currentBananaPrice);
 	if(currentBananaPrice>userCash){
 		alert("You are pathetic.  You can't even afford a banana!");
 	}
 	else{
 		userCash-= (banana.price);
-		bananasBought++;
 	}
 	console.log("user cash"+userCash);
 	console.log("bananas bought" +bananasBought);
@@ -66,13 +67,12 @@ function bananaClick(banana){
 
 function pearClick(pear){
 	var currentPearPrice = parseInt(pear.price);
-	//applesBought.push(apple.price);
+	pearsBought.push(currentPearPrice);
 	if(currentPearPrice>userCash){
 		alert("You are pathetic.  You can't even afford a pear!");
 	}
 	else{
 		userCash-= (pear.price);
-		pearsBought++;
 	}
 	console.log("user cash"+userCash);
 	console.log("pears bought" +pearsBought);
@@ -102,13 +102,33 @@ function randomNumber(min, max) {
 	return Math.floor(Math.random() * (1 + max - min) + min);
 }
 
+function youBoughtFruit (event) {
+	$(".moniesAndFruit").children().remove();
+	$(".moniesAndFruit").append("<p>Available Cash: $"+userCash+"</p>");
+	$(".moniesAndFruit").append("<p>Apples: "+ totalApples+"</p>");
+	$(".moniesAndFruit").append("<p>ApplesAverage: $"+ averageApplePrice + "</p>");
+	$(".moniesAndFruit").append("<p>Oranges: "+totalOranges+"</p>");
+	$(".moniesAndFruit").append("<p>OrangesAverage: $"+ averageOrangePrice + "</p>");
+	$(".moniesAndFruit").append("<p>Bananas: "+totalBananas+"</p>");
+	$(".moniesAndFruit").append("<p>BananasAverage: $" + averageBananaPrice + "</p>");
+	$(".moniesAndFruit").append("<p>Pears: "+totalPears+"</p>");
+	$(".moniesAndFruit").append("<p>PearsAverage: $"+averagePearPrice+"</p>");
+}
+
+function averageFruitPrice (fruitArray) {
+	var fruitAverage = 0;
+	var fruitSum = 0;
+	for (var i = 0; i < fruitArray.length; i++) {
+		fruitSum += fruitArray[i];
+	}
+	fruitAverage = fruitSum/(fruitArray.length);
+	console.log("fruit average is " +fruitAverage);
+	return fruitAverage;
+}
 
 $(document).ready(function(){
 	setInterval(function(){
 		variatePrice(market);
-		console.log("apple" +apple.price);
-		console.log("orange" +orange.price);
-
 	//$("div").remove(".fruitClass");
 
 	//$("body").append("<div></div>");
@@ -128,37 +148,39 @@ $(document).ready(function(){
 	// $(".fruitBasket").append("<p>"+grape.name+": $"+grape.price+"</p>");
 	$(".fruitBasket").append("<p>"+pear.name+": $"+pear.price+"</p>");
 	$(".fruitBasket").append("<button class=buyPear>Buy One Pear</button>");
-	
-	$(".fruitBasket").append("<p>Available Cash: $"+userCash+"</p>");
-
 	$("fruitDiv").append(fruitBasket);
-
-
-	
-	}, 2000);
+	}, 2000);	
 
 	
 $("body").on('click', '.buyApple', function(){
-	console.log("click worked");
+	totalApples++;
+	youBoughtFruit();
 	appleClick(apple);
+	averageApplePrice = averageFruitPrice(applesBought);
 	console.log("you bought an apple!");	
 });
 
 $("body").on('click', '.buyOrange', function(){
-	console.log("click worked");
+	totalOranges++;
+	youBoughtFruit();
 	orangeClick(orange);
+	averageOrangePrice = averageFruitPrice(orangesBought);
 	console.log("you bought an orange!");	
 });
 
 $("body").on('click', '.buyBanana', function(){
-	console.log("click worked");
+	totalBananas++;
+	youBoughtFruit();
 	bananaClick(banana);
+	averageBananaPrice = averageFruitPrice(bananasBought);
 	console.log("you bought a banana!");	
 });
 
 $("body").on('click', '.buyPear', function(){
-	console.log("click worked");
+	totalPears++;
+	youBoughtFruit();
 	pearClick(pear);
+	averagePearPrice = averageFruitPrice(pearsBought);
 	console.log("you bought a pear!");	
 });
 	
